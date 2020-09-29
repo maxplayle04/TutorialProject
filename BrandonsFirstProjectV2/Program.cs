@@ -1,70 +1,60 @@
 ﻿using System;
 using System.ComponentModel.Design.Serialization;
+using System.Diagnostics;
+using System.Threading;
 
 namespace BrandonsFirstProjectV2
 {
     class Program
     {
 
-
+        [STAThread]
         static void Main(string[] args)
         {
-           switch (GetInput(ConsoleColor.Green, ConsoleColor.Yellow, "Who do you want to bully?", "Tell me who you want to bully, you idiot!").ToLower())
+
+            Util.Log("(C) Max Playle 2020 - All rights reserved!");
+            if (!Debugger.IsAttached)
             {
-                case "lea":
-                    {
-                        Log("You want to bully Lea?"); 
-                    }
-                    break;
+                Thread.Sleep(5000);
             }
+            MainMenu();
+
         }
 
-        /// <summary>
-        /// Gets an input from the user using the console.
-        /// </summary>
-        /// <param name="promptColor">The colour that the question will be displayed in.</param>
-        /// <param name="answerColor">The colour that the answer will be dipslayed in as the user is typing.</param>
-        /// <param name="questionIn">The question to ask the user.</param>
-        /// <param name="errorMessage">The error message if the user doesn't type anything (if blank, will return null if the response is empty)</param>
-        /// <returns>The user's input (or null, if there is no error message and the user types nothing)</returns>
-        static string GetInput(ConsoleColor promptColor, ConsoleColor answerColor, string questionIn, string errorMessage = null)
+        static void MainMenu()
         {
-        GET_INPUT_BEGIN:
-            
-            var precolor = Console.ForegroundColor;
-            
-            Console.ForegroundColor = promptColor;
-            
-            Console.Write($"\n{questionIn} ");
-            
-            Console.ForegroundColor = answerColor;
-            
-            var response = Console.ReadLine();
-            
-            if (string.IsNullOrEmpty(errorMessage) == false && string.IsNullOrEmpty(response))
-            {
-                Console.ForegroundColor = precolor;
-                Console.WriteLine($"ERROR: {errorMessage}");
-                goto GET_INPUT_BEGIN;
-            }
 
-            Console.ForegroundColor = precolor;
-            
-           return response;
+        DO_MAIN_MENU:
+                Console.Clear();
+                Util.Log("------------------------------------------------------------------------------");
+                Util.Log("Main Menu");
+                Util.Log("------------------------------------------------------------------------------");
+                Util.Log("1. Bully somebody");
+                Util.Log("2. View the GitHub repository");
+                Util.Log("3. Exit");
+                Util.Log("------------------------------------------------------------------------------");
+
+                switch (Util.GetKeyInput(ConsoleColor.Yellow, ConsoleColor.Green, "Select an option:").Key)
+                {
+                    case ConsoleKey.D1:
+                        RoastScript.Start();
+                        goto DO_MAIN_MENU;
+
+                    case ConsoleKey.D2:
+                        Miscellaneous.ViewGitHubRepo();
+                        goto DO_MAIN_MENU;
+
+                    case ConsoleKey.D3:
+                        Miscellaneous.Exit();
+                        goto DO_MAIN_MENU;
+
+                    default:
+                        Util.Log("Input not recognised! Sending you to the main menu!");
+                        Thread.Sleep(1000);
+                        goto DO_MAIN_MENU;
+                }
         }
 
-        static void Log(string contentIn, bool newLine = true)
-        {
-            switch (newLine)
-            {
-                case true:
-                    Console.WriteLine(contentIn);
-                    break;
-
-                case false:
-                    Console.Write(contentIn);
-                    break;
-            }
-        }
+    
     }
 }
